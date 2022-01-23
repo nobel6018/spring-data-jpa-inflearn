@@ -8,11 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import javax.transaction.Transactional;
-
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -35,8 +33,13 @@ class MemberRepositoryTest {
 
         Page<Member> page = memberRepository.findByAge(10, pageRequest);
 
+        // .map 함수를 사용하여 page 내부의 데이터 변경
+        // .map 함수는 Page 인터페이스에 구현
+        Page<MemberDto> map = page.map(m -> new MemberDto(m.getId(), m.getUsername(), m.getAge(), null));
+
         // then
         List<Member> content = page.getContent();
+
 
         assertThat(content.size()).isEqualTo(3);
         assertThat(page.getTotalElements()).isEqualTo(5); // 전체 데이터 수. 전체 카운트 쿼리
