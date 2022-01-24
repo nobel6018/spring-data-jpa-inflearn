@@ -1,5 +1,6 @@
 package com.example.springedatajpainflearn.member;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,20 @@ class MemberRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Test
+    @DisplayName("@Query에 파라미터 바인딩")
+    public void testQueryAnnotation() {
+        // given
+        Member member1 = memberRepository.save(new Member("member1", 10));
+        Member member2 = memberRepository.save(new Member("member2", 15));
+        Member member3 = memberRepository.save(new Member("member3", 20));
+
+        // when
+        Member member = memberRepository.findUser("member2", 15);
+
+        // then
+        assertThat(member).isEqualTo(member2);
+    }
     @Test
     public void testPage() {
         // given
