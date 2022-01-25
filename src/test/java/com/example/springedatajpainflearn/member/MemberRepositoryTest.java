@@ -1,5 +1,7 @@
 package com.example.springedatajpainflearn.member;
 
+import com.example.springedatajpainflearn.team.Team;
+import com.example.springedatajpainflearn.team.TeamRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private TeamRepository teamRepository;
 
     @PersistenceContext
     EntityManager em;
@@ -95,5 +100,30 @@ class MemberRepositoryTest {
         // then
         assertThat(resultCount).isEqualTo(3);
         assertThat(member.getAge()).isEqualTo(31); // em.clear() 했기 때문에. 영속성 컨텍스트 초기화됐고 query 다시 나가서 31로 업데이트 됨
+    }
+
+    @Test
+    public void findMemberLazy() {
+        // given
+        Team teamA = new Team("TeamA");
+        Team teamB = new Team("TeamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        memberRepository.save(new Member("member1", 10, teamA));
+        memberRepository.save(new Member("member2", 20, teamB));
+
+        em.flush();
+        em.clear();
+
+        // when
+        List<Member> members = memberRepository.findAll();
+
+        // then
+        for (Member member : members) {
+            System.out.println("member = " + member);
+            System.out.println("member.getTeam().getClass() = " + member.getTeam().getClass());
+            System.out.println("member.getTeam().getName() = " + member.getTeam().getName());
+        }
     }
 }
