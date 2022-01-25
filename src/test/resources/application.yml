@@ -17,4 +17,4 @@ logging:
 
 decorator:
   datasource:
-    enabled: false
+    enabled: true

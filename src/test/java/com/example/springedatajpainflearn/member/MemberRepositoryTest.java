@@ -8,8 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -19,6 +22,9 @@ class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @PersistenceContext
+    EntityManager em;
 
     @Test
     @DisplayName("@Query에 파라미터 바인딩")
@@ -34,6 +40,7 @@ class MemberRepositoryTest {
         // then
         assertThat(member).isEqualTo(member2);
     }
+
     @Test
     public void testPage() {
         // given
@@ -63,5 +70,30 @@ class MemberRepositoryTest {
         assertThat(page.isFirst()).isTrue();
         assertThat(page.isLast()).isFalse();
         assertThat(page.hasNext()).isTrue();
+    }
+
+    @Test
+    public void bulkUpdate() {
+        // given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 15));
+        memberRepository.save(new Member("member3", 20));
+        memberRepository.save(new Member("member4", 25));
+        memberRepository.save(new Member("member5", 30));
+
+        // when
+        int resultCount = memberRepository.bulkAgePlus(20);
+
+        // 같은 transaction이면 같은 entity manager를 사용한다
+        // jpql을 적으면 영속성 context 내보내고 jpql 실행한다 -> 그래서 em.flush() 필요가 없다
+        // 벌크 연산 이후에는 영속성 context 날려야 한다
+        em.clear();
+
+        Optional<Member> member1 = memberRepository.findByUsername("member5");
+        Member member = member1.get();
+
+        // then
+        assertThat(resultCount).isEqualTo(3);
+        assertThat(member.getAge()).isEqualTo(31); // em.clear() 했기 때문에. 영속성 컨텍스트 초기화됐고 query 다시 나가서 31로 업데이트 됨
     }
 }
