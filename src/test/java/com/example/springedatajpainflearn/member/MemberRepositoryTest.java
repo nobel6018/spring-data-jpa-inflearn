@@ -126,4 +126,42 @@ class MemberRepositoryTest {
             System.out.println("member.getTeam().getName() = " + member.getTeam().getName());
         }
     }
+
+    @Test
+    public void queryHint() {
+        // given
+        Member member1 = new Member("member1", 10);
+        System.out.println(member1); // id = null
+        memberRepository.save(member1);
+        // call next value for hibernate_sequence;
+        // 실제 insert 쿼리 나가는건 아님
+        System.out.println(member1); // id = 1
+        em.flush();
+        em.clear();
+
+        // when
+        Member foundMember = memberRepository.findReadOnlyByUsername("member1");
+        foundMember.setUsername("member2");
+
+        em.flush();
+
+        // then
+    }
+
+    @Test
+    public void lock() {
+        // given
+        Member member1 = new Member("member1", 10);
+        System.out.println(member1); // id = null
+        memberRepository.save(member1);
+        // call next value for hibernate_sequence;
+        System.out.println(member1); // id = 1
+        em.flush();
+        em.clear();
+
+        // when
+        List<Member> result = memberRepository.findLockByUsername("member1");
+
+        // then
+    }
 }
