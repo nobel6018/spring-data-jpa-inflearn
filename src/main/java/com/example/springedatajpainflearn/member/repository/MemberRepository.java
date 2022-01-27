@@ -1,5 +1,6 @@
-package com.example.springedatajpainflearn.member;
+package com.example.springedatajpainflearn.member.repository;
 
+import com.example.springedatajpainflearn.member.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
@@ -10,7 +11,7 @@ import javax.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
     @Query("select m from Member m where m.username = :username and m.age = :age")
     Member findUser(@Param("username") String username, @Param("age") int age);

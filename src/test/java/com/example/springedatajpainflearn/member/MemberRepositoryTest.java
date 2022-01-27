@@ -1,5 +1,6 @@
 package com.example.springedatajpainflearn.member;
 
+import com.example.springedatajpainflearn.member.repository.MemberRepository;
 import com.example.springedatajpainflearn.team.Team;
 import com.example.springedatajpainflearn.team.TeamRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -161,6 +162,16 @@ class MemberRepositoryTest {
 
         // when
         List<Member> result = memberRepository.findLockByUsername("member1");
+
+        // then
+    }
+
+    @Test
+    public void testCustomRepository() {
+        // given
+
+        // when
+        List<Member> memberCustom = memberRepository.findMemberCustom();
 
         // then
     }

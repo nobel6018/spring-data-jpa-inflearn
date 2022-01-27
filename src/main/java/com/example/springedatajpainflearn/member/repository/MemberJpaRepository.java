@@ -1,5 +1,6 @@
-package com.example.springedatajpainflearn.member;
+package com.example.springedatajpainflearn.member.repository;
 
+import com.example.springedatajpainflearn.member.Member;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

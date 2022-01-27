@@ -1,5 +1,6 @@
 package com.example.springedatajpainflearn.member;
 
+import com.example.springedatajpainflearn.member.repository.MemberJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
