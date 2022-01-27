@@ -78,4 +78,26 @@ class MemberTest {
         System.out.println("foundMember.getCreatedAt() = " + foundMember.getCreatedAt());
         System.out.println("foundMember.getUpdatedAt() = " + foundMember.getUpdatedAt());
     }
+
+    @Test
+    public void testDataJpaBaseEntity() throws InterruptedException {
+        // given
+        Member member = new Member("member1");
+        memberRepository.save(member);  // @PrePersist
+
+        Thread.sleep(100);
+        member.setUsername("member2");
+
+        em.flush();
+        em.clear();
+
+        // when
+        Member foundMember = memberRepository.findById(member.getId()).get();
+
+        // then
+        System.out.println("foundMember.getCreatedAt() = " + foundMember.getCreatedAt());
+        System.out.println("foundMember.getUpdatedAt() = " + foundMember.getUpdatedAt());
+        System.out.println("foundMember.getCreatedBy() = " + foundMember.getCreatedBy());
+        System.out.println("foundMember.getUpdatedBy() = " + foundMember.getUpdatedBy());
+    }
 }
